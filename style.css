@@ -8,7 +8,7 @@
 body{
   display: flex;
   /* justify-content: center; */
-  align-items: center;
+  /* align-items: center; */
   flex-direction: column;
   background-color: rgb(219, 219, 213);
   margin: 0 30px 100px 30px;
@@ -30,6 +30,13 @@ body{
 li{
   margin: 10px 0;
 }
+
+#container{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
 #canvas{
   background-color: white ;
   width: 45vw;
@@ -50,4 +57,10 @@ li{
   height:100px;
   
 
+}
+
+#titleContainer{
+  display: flex;
+  width: 100%;
+  justify-content: center;
 }

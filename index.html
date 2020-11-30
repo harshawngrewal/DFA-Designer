@@ -13,37 +13,46 @@
 </head>
 
 <body>
-  <h1 id="Title"> DFA Designer</h1>
+  <div id = "titleContainer">
+    <h1 id="tite"> DFA Designer</h1>
+  </div>
+
   <h1 id="description"> A DFA (also know has a Determinitic Finite State
     Automation is a common tool which is used to determine whether
     or not a particular <a href="https://en.wikipedia.org/wiki/Regular_language"> regular language
     </a> accepts or rejects a string </h1>
 
-  <canvas id="canvas">
-  </canvas>
-  <div id = "rules">
+  <div id="container">
+    <canvas id="canvas">
+    </canvas>
+  </div>
+
+  <div id="rules">
     <ul>
       <li>
-        Click the canvas to start 
+        Click the canvas to start
       </li>
       <li>
-        Add a state: Either select an accepting state(double circle) or a 
+        Add a state: Either select an accepting state(double circle) or a
         transition state(cicle) from the items menu and click on canvas to add
       </li>
       <li>
-         Add a label to the state: click on text box inside the circle and 
-         edit
+        Add a label to the state: click on text box inside the circle and
+        edit
       </li>
       <li>
-        Add a line: click on the line icon from the line menu and click on 
+        Add a line: click on the line icon from the line menu and click on
         canvas and drag
       </li>
       <li>
         Delete and item: click on the item and press the delete key on your keyboard
       </li>
-  
-    </ul> 
-    </div>
+
+    </ul>
+  </div>
+  <footer id="footer">
+    Created by: Harshawn Grewal
+  </footer>
 
 </body>
 <script src="script.js"></script>
