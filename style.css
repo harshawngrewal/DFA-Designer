@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css?family=Audiowide&display=swap');
+*{
+  font-family: Audiowide;
+  src: url(../fonts/Audiowide/Audiowide-Regular.ttf);
+  font-weight: 400;
+}
+
+body{
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+  flex-direction: column;
+  background-color: rgb(219, 219, 213);
+  margin: 0 30px 100px 30px;
+}
+
+#description{
+  font-size: medium;
+  padding-bottom: 10px;
+  align-self: start;
+  margin-left: 30px;
+
+  
+}
+#rules{
+  align-self: start;
+  margin-left: 30px;
+
+
+}
+#canvas{
+  background-color: white ;
+  width: 45vw;
+  height: 55vh;
+  border-radius: 30px;
+}
+#canvas:hover{
+  box-shadow: 0 0 30px rgba(107, 104, 104, 0.5); 
+}
