@@ -90,6 +90,13 @@ li{
   position: relative;
 }
 
+#circle:hover{
+  /* filter: drop-shadow(4px 4px grey); */
+  box-shadow: 0 0 30px rgba(107, 104, 104, 0.5); 
+}
+
+
+
 #innerCircle{
   position: absolute;
   width: 50px;
@@ -101,3 +108,12 @@ li{
   margin: 7px;
 }
 
+#clear, #arrow{
+  background-color: transparent;
+}
+
+#clear:hover, #arrow:hover{
+  /* box-shadow: 0 0 30px rgba(107, 104, 104, 0.5);  */
+  filter: drop-shadow(4px 4px grey);
+
+}

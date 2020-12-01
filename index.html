@@ -24,11 +24,15 @@
 
   <div id="container">
     <div id = "menu">
-      <img src = "arrow-outline.png" alt= "arrow" width="50px">
+      <img id = "arrow" src = "\images\arrow-outline.png"
+       alt= "arrow" width="50px">
       <div id = "circle"></div> 
       <div id = "circle">
         <div id = "innerCircle"></div>
       </div>
+
+      <img id = "clear" src = "\images\clear.png" alt = "clear" width="50px">
+      
       
     </div>
     <canvas id="canvas">
@@ -42,18 +46,22 @@
       </li>
       <li>
         Add a state: Either select an accepting state(double circle) or a
-        transition state(cicle) from the items menu and click on canvas to add
+        transition state(cicle) from the items menu and click on canvas to 
+        add. Or double click on an empty spot in the canvas
       </li>
       <li>
-        Add a label to the state: click on text box inside the circle and
-        edit
+        Add a label to the state: Double click the state and edit label
       </li>
       <li>
         Add a line: click on the line icon from the line menu and click on
-        canvas and drag
+        canvas and drag, Or hold shift on keyboard an drag on canvas. To add
+        a curved line either click a state and press L on keyboard or select 
+        from menu and add to canvas
       </li>
       <li>
-        Delete and item: click on the item and press the delete key on your keyboard
+        Delete/Clear: click on the item and press the delete key 
+        on your keyboard, or click on the 'CLEAR' button to clear the whole
+        canvas 
       </li>
 
     </ul>
