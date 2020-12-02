@@ -1,12 +1,27 @@
-// const canvas = document.querySelector('#canvas');
-// let shadow = false;
-// canvas.addEventListener('click', (e) => {
-//   if (shadow == false) {
-//     shadow = true;
-//     e.target.style.boxShadow = "0 0 30px rgba(107, 104, 104, 0.5)";
-//   }
-//   else {
-//     shadow = false;
-//     e.target.style.boxShadow = "";
-//   }
-// })
+
+// here is the code for the controller
+function canvasController(canvasView, canvasModel) {
+  this.canvasView = canvasView;
+  this.canvasModel = canvasModel;
+}
+
+canvasController.prototype.updateModel = function updateModel() {
+
+}
+
+// here is the code for the model
+function canvasModel() {
+  this.observers = [];
+  observers.push("wassup")
+}
+
+canvasModel.prototype.removeObserver = function removeObserver(object){
+  for(i = 0; i< this.observers.length; i ++){
+  if (this.observers[i] == object) {
+    this.observer.pop(i);
+  }
+
+}
+}
+
+
