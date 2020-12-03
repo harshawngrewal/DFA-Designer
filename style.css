@@ -79,7 +79,7 @@ li{
 }
 
 
-#circle {
+#circle, #circle2 {
   width: 70px;
   height: 70px;
   -webkit-border-radius: 50px;
@@ -89,7 +89,7 @@ li{
   position: relative;
 }
 
-#circle:hover{
+#circle:hover, #circle2:hover{
   /* filter: drop-shadow(4px 4px grey); */
   box-shadow: 0 0 30px rgba(107, 104, 104, 0.5); 
 }
