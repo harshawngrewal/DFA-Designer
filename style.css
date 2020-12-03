@@ -49,9 +49,8 @@ li{
 
 #canvas{
   background-color: white ;
-  width: 45vw;
-  height: 55vh;
   border-radius: 30px;
+  flex-shrink: 0;
 }
 #canvas:hover{
   box-shadow: 0 0 30px rgba(107, 104, 104, 0.5); 
