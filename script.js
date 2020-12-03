@@ -52,11 +52,31 @@ CircleCommand.prototype.execute = function execute(){
 
 }
 
-// let circle = new CircleCommand(800, 50);
-// circle.execute();
 
+class DoubleCircleCommand{
+  constructor(xcord, ycord){
+    this.canvas = document.getElementById("canvas");
+    this.ctx = this.canvas.getContext('2d');
+    this.xcord = xcord;
+    this.ycord = ycord;
 
+  }
+  
+}
 
+DoubleCircleCommand.prototype.execute = function execute(){
+  this.ctx.beginPath();
+  this.ctx.arc(this.xcord, this.ycord, 35, 0, 2 * Math.PI);
+  this.ctx.stroke();
+
+  this.ctx.beginPath();
+  this.ctx.arc(this.xcord, this.ycord, 25, 0, 2 * Math.PI);
+  this.ctx.stroke();
+
+}
+
+// let circle = new DoubleCircleCommand(800, 50);
+// circle.execute(); 
 
 
 
