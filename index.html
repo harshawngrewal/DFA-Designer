@@ -24,17 +24,17 @@
 
   <div id="container">
     <div id = "menu">
-      <!-- have to pass on the locations of the click -->
-      <!-- Note: we can make this act like a button by adding an actionlistner -->
       <img id = "arrow" src = "\images\arrow-outline.png"
        alt= "arrow" width="50px">
       <div id = "circle"></div> 
       <div id = "circle2">
         <div id = "innerCircle"></div>
       </div>
+      <input type="text" id="fname" name="fname" placeholder="type here">
 
       <img id = "clear" src = "\images\clear.png" alt = "clear" width="50px">
-      
+      <img id = "eraser" src = "\images\eraser.png" alt = "eraser"
+       width = "50px" >
       
     </div>
     <canvas id="canvas" width = 900px height = 600px;>
@@ -46,21 +46,23 @@
       <li>
         Add a state: Either select an accepting state(double circle) or a
         transition state(cicle) from the items menu and click on canvas to 
-        add. Or double click on an empty spot in the canvas
+        add.
       </li>
       <li>
         Add a label to the state: Double click the state and edit label
       </li>
       <li>
         Add a line: click on the line icon from the line menu and click on
-        canvas and drag, Or hold shift on keyboard an drag on canvas. To add
-        a curved line either click a state and press L on keyboard or select 
-        from menu and add to canvas
+        canvas and drag, Or hold shift on keyboard an drag on canvas. To curve
+        the line, adjust the line by clicking and holding the pivot and moving 
+        it in desired direction
       </li>
       <li>
-        Delete/Clear: click on the item and press the delete key 
-        on your keyboard, or click on the 'CLEAR' button to clear the whole
-        canvas 
+        Clear: Click the clear button from the menu to erase entire canvas
+      </li>
+      <li>
+        Eraser: Click on the eraser button from menu and then click on any shape
+        on the canvas to erase that are on the canvas
       </li>
 
     </ul>

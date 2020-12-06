@@ -111,7 +111,7 @@ li{
   background-color: transparent;
 }
 
-#clear:hover, #arrow:hover{
+#clear:hover, #arrow:hover,  #eraser:hover{
   /* box-shadow: 0 0 30px rgba(107, 104, 104, 0.5);  */
   filter: drop-shadow(4px 4px grey);
 
