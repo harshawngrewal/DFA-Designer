@@ -6,71 +6,50 @@ class canvasController {
     this.currcommand = null;
     this.currcommandType = null;
 
-    this.clearCommand = new ClearCommand(this.canvasModel) // only need one instance
-    this.eraserCommand = new EraserCommand(this.canvasModel) // only need one instance
-
+    // only need one instance of these commands 
+    this.clearCommand = new ClearCommand(this.canvasModel) 
+    this.eraserCommand = new EraserCommand(this.canvasModel)
   }
 }
 
   canvasController.prototype.createCommand = function createCommand(commandType, e) {
-  this.currcommandType = commandType;
-  if (this.currcommandType == "clear" || this.currcommandType == "input") {
-  this.updateModel(e);
-}
-
-}
+    if (commandType == "clear" || commandType == "input") {
+      if (commandType == "clear") {
+        this.canvasModel.removeAllObservers();
+        this.clearCommand.execute();
+      }
+      else {
+        command = new LabelCommand(this.canvasModel);
+        command.setLocation(e);
+        this.canvasModel.addObserver(command);
+      }
+    }
+    else {
+      this.currcommandType = commandType;
+    }
+  }
 
   canvasController.prototype.updateModel = function updateModel(e) {
-  if (this.currcommandType == "clear") {
-  this.currcommand = this.clearCommand;
-  this.canvasModel.removeAllObservers();
-  this.currcommand.execute();
-}
+    if (this.currcommandType == "eraser") {
+      this.currcommand = this.eraserCommand;
+      res = this.canvasModel.removeObserver(e);
+      
+      if (res != null) {
+        this.currcommand.execute(res);
+      }
+    }
 
-else if(this.currcommandType == "input") {
-  this.currcommand = new LabelCommand(this.canvasModel);
-  this.currcommand.setLocation(e);
-  this.canvasModel.addObserver(this.currcommand);
-  this.currcommandType = null;
-}
-
-else if (this.currcommandType == "eraser") {
-  this.currcommand = this.eraserCommand;
-  res = this.canvasModel.removeObserver(e);
-  if (res != null) {
-  this.currcommand.execute(res);
-
-}
-
-}
-
-
-else if (this.currcommandType != null) {
-  // todo need to check that no other shape is in this spot
-  if (this.currcommandType == "circle") {
-  this.currcommand = new CircleCommand(this.canvasModel);
-}
-else {
-  this.currcommand = new DoubleCircleCommand(this.canvasModel)
-}
-  this.currcommand.setLocation(e)
-  this.canvasModel.addObserver(this.currcommand);
-}
-}
-
-// canvasController.prototype.mouseDown = function mouseDown(e){
-//   if (commandType == "clear"){
-//     this.currcommand = this.eraserCommand;
-//     res = this.canvasModel.removeObserver(e);
-//     if (res != null){
-//       this.currcommand.execute(res);
-//     }
-
-//   }
-
-// }
-
-
+    else if (this.currcommandType != null) {
+      if (this.currcommandType == "circle") {
+        this.currcommand = new CircleCommand(this.canvasModel);
+      }
+      else {
+        this.currcommand = new DoubleCircleCommand(this.canvasModel)
+      }
+      this.currcommand.setLocation(e)
+      this.canvasModel.addObserver(this.currcommand);
+    }
+  }
 
 //------------- Here is the code for the model------------
 
@@ -83,25 +62,25 @@ class canvasModel {
 }
 
   canvasModel.prototype.removeAllObservers = function removeAllObservers() {
-  this.observers =[];
+    this.observers =[];
 }
   canvasModel.prototype.removeObserver = function  removeObserver(event) {
-  for (i = 0; i<this.observers.length; i++) {
-  if (Math.abs(this.observers[i].xcord - (event.clientX - this.bounds.left))
-  <= 35 &&
-  Math.abs(this.observers[i].ycord - (event.clientY - this.bounds.top))
-  <= 35) {
-  removed = this.observers[i];
-  this.observers.splice(i, 1);
-  return removed;
-
-}
-}
+    for (i = 0; i<this.observers.length; i++) {
+    if (Math.abs(this.observers[i].xcord - (event.clientX - this.bounds.left))
+    <= 35 &&
+    Math.abs(this.observers[i].ycord - (event.clientY - this.bounds.top))
+    <= 35) {
+      removed = this.observers[i];
+      this.observers.splice(i, 1);
+      return removed;
+    }
+  }
 }
 
   canvasModel.prototype.addObserver = function   addObserver(object) {
-  this.observers.push(object);
-  object.execute(); // every command will have an execute method
+    this.observers.push(object);
+    object.execute(); // every command will have an execute method
+    console.log(this.observers.length)
 
 }
 
@@ -120,15 +99,15 @@ class CircleCommand {
 }
 
   CircleCommand.prototype.setLocation = function setLocation(event) {
-  let bounds = this.canvas.getBoundingClientRect();
-  this.xcord = event.clientX - bounds.left;
-  this.ycord = event.clientY - bounds.top;
+    let bounds = this.canvas.getBoundingClientRect();
+    this.xcord = event.clientX - bounds.left;
+    this.ycord = event.clientY - bounds.top;
 }
 
   CircleCommand.prototype.execute = function execute() {
-  this.ctx.beginPath();
-  this.ctx.arc(this.xcord, this.ycord, 35, 0, 2 * Math.PI);
-  this.ctx.stroke();
+    this.ctx.beginPath();
+    this.ctx.arc(this.xcord, this.ycord, 35, 0, 2 * Math.PI);
+    this.ctx.stroke();
 
 }
 
@@ -147,19 +126,19 @@ class DoubleCircleCommand {
 }
 
   DoubleCircleCommand.prototype.setLocation = function setLocation(event) {
-  let bounds = this.canvas.getBoundingClientRect();
-  this.xcord = event.clientX - bounds.left;
-  this.ycord = event.clientY - bounds.top;
+    let bounds = this.canvas.getBoundingClientRect();
+    this.xcord = event.clientX - bounds.left;
+    this.ycord = event.clientY - bounds.top;
 }
 
   DoubleCircleCommand.prototype.execute = function execute() {
-  this.ctx.beginPath();
-  this.ctx.arc(this.xcord, this.ycord, 35, 0, 2 * Math.PI);
-  this.ctx.stroke();
+    this.ctx.beginPath();
+    this.ctx.arc(this.xcord, this.ycord, 35, 0, 2 * Math.PI);
+    this.ctx.stroke();
 
-  this.ctx.beginPath();
-  this.ctx.arc(this.xcord, this.ycord, 25, 0, 2 * Math.PI);
-  this.ctx.stroke();
+    this.ctx.beginPath();
+    this.ctx.arc(this.xcord, this.ycord, 25, 0, 2 * Math.PI);
+    this.ctx.stroke();
 
 }
 
@@ -173,8 +152,8 @@ class ClearCommand {
   }
 }
   ClearCommand.prototype.execute = function execute() {
-  this.canvas.getContext("2d").clearRect(0, 0, this.canvas.width,
-  this.canvas.height);
+    this.canvas.getContext("2d").clearRect(0, 0, this.canvas.width,
+    this.canvas.height);
 
 }
 
@@ -188,10 +167,10 @@ class EraserCommand {
 }
 
   EraserCommand.prototype.execute = function execute(shape) {
-  shape.ctx.beginPath();
-  shape.ctx.arc(shape.xcord, shape.ycord, 45, 0, 2 * Math.PI);
-  shape.ctx.fillStyle = "white";
-  shape.ctx.fill();
+    shape.ctx.beginPath();
+    shape.ctx.arc(shape.xcord, shape.ycord, 45, 0, 2 * Math.PI);
+    shape.ctx.fillStyle = "white";
+    shape.ctx.fill();
 
 }
 
@@ -244,52 +223,50 @@ const canvasBtn = document.getElementById('canvas');
 
 
 canvasBtn.addEventListener('click', (e) => {
-  // click = 1;
-  // if (heldShift == 0){
-  //   click = 0;
-  //   controller.updateModel(e);
+  clickevent = e;
+  if (heldShift == 1) {
+    click = 1;
+  }
+  else {
+    controller.updateModel(e);
 
-  // }
-  console.log('hello')
-  click ++
-  if (click == 1) {
-    timeout = setTimeout(function () {
-      if (click == 1) {
-        controller.updateModel(e);
-      }
-      click = 0;
-    }, 300)
   }
 
+})
+
+document.addEventListener('keydown', (e) => {
+  if (e.code == "ShiftLeft") {
+    heldShift = 1;
+    function Timeout() {
+      timeout = setTimeout(function () {
+
+        if (click == 1 && heldShift == 1) {
+          controller.createCommand('input', clickevent);
+        }
+        if (heldShift == 1) {
+          Timeout();
+        }
+        click = 0;
+
+
+      }, 100)
+
+    }
+    Timeout();
+  }
 
 })
 
-canvasBtn.addEventListener('dblclick', (e) => {
-  controller.createCommand('input', e);
+document.addEventListener('keyup', (e) => {
+  if (e.code == "ShiftLeft") {
+    heldShift = 0;
+  }
+
 })
 
-// canvasBtn.addEventListener('keydown', (e) => {
-//   console.log("hello");
-//   if(e.code == 16){
-//     heldShift = 1;
-//     timeout = setTimeout(function (){
-//       if (click == 1){
-//         controller.createCommand('input', e);
-
-//       }
-//       else{
-//         heldShift = 0;
-//       }
-
-
-//     }, 200)
-
-//   }
-
-// })
-
-let heldShift = 0; // will help in differentiating between click and dbclick
-let click = 0;
+let heldShift = 0; // will help to identify shift + click
+let click = 0; // will help to identify shift + click
+let clickevent = null;
 
 // todo: needs to act like an actual eraser (drag around canvas to erase) 
 // todo: instead of double click to add Label, make it so that it is 
