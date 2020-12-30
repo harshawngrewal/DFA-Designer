@@ -6,6 +6,8 @@
 }
 
 body{
+  cursor: default;
+  /* cursor: url("images/eraserIcon.png"), auto; */
   display: flex;
   /* justify-content: center; */
   /* align-items: center; */
