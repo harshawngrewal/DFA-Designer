@@ -23,10 +23,25 @@ class canvasController {
         command.setLocation(e);
         this.canvasModel.addObserver(command);
       }
+      document.getElementsByTagName("body")[0].style.cursor = "default"
+
     }
     else {
       this.currcommandType = commandType;
+      if (this.currcommandType == "line"){
+        this.currcommand = new LineCommand(this.canvasModel, e)
+      }
+
+      else if (this.currcommandType == "eraser"){
+        document.getElementsByTagName("body")[0].style.cursor = 
+        "url('images/eraserIcon.png'), auto";
+      }
+      else{
+        document.getElementsByTagName("body")[0].style.cursor = "default"
+
+      }
     }
+
   }
 
   canvasController.prototype.updateModel = function updateModel(e) {
@@ -35,6 +50,7 @@ class canvasController {
       res = this.canvasModel.removeObserver(e);
       
       if (res != null) {
+        console.log(res)
         this.currcommand.execute(res);
       }
     }
@@ -43,7 +59,7 @@ class canvasController {
       if (this.currcommandType == "circle") {
         this.currcommand = new CircleCommand(this.canvasModel);
       }
-      else {
+      else if (this.currcommandType == "circle2") {
         this.currcommand = new DoubleCircleCommand(this.canvasModel)
       }
       this.currcommand.setLocation(e)
@@ -80,7 +96,7 @@ class canvasModel {
   canvasModel.prototype.addObserver = function   addObserver(object) {
     this.observers.push(object);
     object.execute(); // every command will have an execute method
-    console.log(this.observers.length)
+    // console.log(this.observers.length)
 
 }
 
@@ -186,19 +202,48 @@ class LabelCommand {
 }
 
   LabelCommand.prototype.setLocation = function setLocation(event) {
-  let bounds = this.canvas.getBoundingClientRect();
-  this.xcord = event.clientX - bounds.left;
-  this.ycord = event.clientY - bounds.top;
+    let bounds = this.canvas.getBoundingClientRect();
+    this.xcord = event.clientX - bounds.left;
+    this.ycord = event.clientY - bounds.top;
 }
 
 
 
   LabelCommand.prototype.execute = function execute() {
-  this.canvas.getContext('2d').fillText
-  (document.getElementById("fname").value, this.xcord, this.ycord);
-  this.txt = document.getElementById("fname").value;
+    this.txt = document.getElementById("fname").value;
+    this.canvas.getContext('2d').fillText
+    (this.txt, this.xcord - 2 * this.txt.length, this.ycord);
 
 }
+
+// ---------- The Line Command ----------- //
+
+class LineCommand{
+  constructor(canvasModel, e){
+    this.name = "LineCommand";
+    this.canvas = canvasModel.canvas;
+    this.ctx = this.canvas.getContext('2d');
+    this.bounds = this.canvas.getBoundingClientRect();
+    this.startx = e.clientX - this.bounds.left;
+    this.starty = e.clientY - this.bounds.top;
+    this.endx = 0;
+    this.endy = 0;
+  }
+}
+  LineCommand.prototype.setLocation = function setLocation(event){
+    this.endx = event.clientX - this.bounds.left;
+    this.endy = event.clientY - this.bounds.top;
+
+}
+  LineCommand.prototype.execute = function execute(){
+    this.ctx.beginPath();
+    this.ctx.moveTo(this.startx, this.startx);
+    this.ctx.lineTo(this.endx, this.endy );
+    this.ctx.stroke();
+
+  }
+
+
 
 // here we setup of the entire GUI MVC// 
 
@@ -254,20 +299,39 @@ document.addEventListener('keydown', (e) => {
     }
     Timeout();
   }
+  else if(e.code == "ControlLeft"){
+    heldCtrl = 1;
+    console.log("hello boi")
+  }
 
 })
 
+document.addEventListener("mousedown", (e) => {
+  if (heldCtrl == 1) {
+    console.log("line creation")
+    heldLeftClick = 1;
+    controller.createCommand("line", e)
+  }
+})
+
+document.addEventListener("mouseup", (e) =>{
+  if(heldCtrl == 1){
+    controller.updateModel(e);
+  }
+})
+
 document.addEventListener('keyup', (e) => {
-  if (e.code == "ShiftLeft") {
+  if (e.code == "ShiftLeft" || e.code == "ControlLeft") {
     heldShift = 0;
+    heldLeftClick = 0;
+    heldCtrl = 0;
   }
 
 })
 
 let heldShift = 0; // will help to identify shift + click
+let heldCtrl = 0;
+let heldLeftClick = 0;
 let click = 0; // will help to identify shift + click
 let clickevent = null;
 
-// todo: needs to act like an actual eraser (drag around canvas to erase) 
-// todo: instead of double click to add Label, make it so that it is 
-// done by holding down shift and then clicking
