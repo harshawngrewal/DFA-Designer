@@ -14,6 +14,8 @@ body{
   flex-direction: column;
   background-color: rgb(219, 219, 213);
   margin: 0 50px 100px 50px;
+
+
 }
 
 #description{
@@ -45,7 +47,8 @@ li{
   align-items: center;
   justify-content: space-evenly;
   width: 20vw;
-  height: 55vh;
+  height: 60vh;
+  min-height: 500px;
   border-radius: 30px;
 }
 
