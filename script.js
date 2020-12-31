@@ -21,18 +21,19 @@ class canvasController {
       else {
         command = new LabelCommand(this.canvasModel);
         command.setLocation(e);
-        this.canvasModel.addObserver(command);
+        this.canvasModel.addObserver(command); // we skip straight to this 
+        // step because adding labels is not a 2 step process like the others
       }
       document.getElementsByTagName("body")[0].style.cursor = "default"
 
     }
     else {
       this.currcommandType = commandType;
-      if (this.currcommandType == "line"){
-        this.currcommand = new LineCommand(this.canvasModel)
-      }
-
-      else if (this.currcommandType == "eraser"){
+      // if (this.currcommandType == "line"){
+      //   this.currcommand = new LineCommand(this.canvasModel)
+      // }
+      
+      if (this.currcommandType == "eraser"){
         document.getElementsByTagName("body")[0].style.cursor = 
         "url('images/eraserIcon.png'), auto";
       }
@@ -50,7 +51,7 @@ class canvasController {
       res = this.canvasModel.removeObserver(e);
       
       if (res != null) {
-        console.log(res)
+        // console.log(res)
         this.currcommand.execute(res);
       }
     }
@@ -233,13 +234,10 @@ class LineCommand{
   LineCommand.prototype.setLocationStart = function setLocationStart(event){
     this.startx = event.clientX - this.bounds.left;
     this.starty = event.clientY - this.bounds.top;
-    console.log(this.startx, this.starty)
-
   }
   LineCommand.prototype.setLocation = function setLocation(event){
     this.endx = event.clientX - this.bounds.left;
     this.endy = event.clientY - this.bounds.top;
-    console.log(this.endx, this.endy)
 
 
 }
@@ -280,8 +278,9 @@ canvasBtn.addEventListener('click', (e) => {
   if (heldShift == 1) {
     click = 1;
   }
-  
-  controller.updateModel(e);
+  else{
+    controller.updateModel(e);
+  }
 
 })
 
@@ -308,8 +307,8 @@ document.addEventListener('keydown', (e) => {
 })
 
 document.addEventListener("mousedown", (e) => {
-  console.log("mousedown")
   if (controller.currcommandType == "line"){
+    controller.currcommand = new LineCommand(controller.canvasModel)
     controller.currcommand.setLocationStart(e)
   }
 })
@@ -327,4 +326,3 @@ let click = 0; // will help to identify shift + click
 let clickevent = null;
 
 // todo: improve the eraser accuracy
-// todo: add line feautre
