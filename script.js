@@ -29,7 +29,7 @@ class canvasController {
     else {
       this.currcommandType = commandType;
       if (this.currcommandType == "line"){
-        this.currcommand = new LineCommand(this.canvasModel, e)
+        this.currcommand = new LineCommand(this.canvasModel)
       }
 
       else if (this.currcommandType == "eraser"){
@@ -219,26 +219,34 @@ class LabelCommand {
 // ---------- The Line Command ----------- //
 
 class LineCommand{
-  constructor(canvasModel, e){
+  constructor(canvasModel){
     this.name = "LineCommand";
     this.canvas = canvasModel.canvas;
     this.ctx = this.canvas.getContext('2d');
     this.bounds = this.canvas.getBoundingClientRect();
-    this.startx = e.clientX - this.bounds.left;
-    this.starty = e.clientY - this.bounds.top;
+    this.startx = 0
+    this.starty = 0
     this.endx = 0;
     this.endy = 0;
   }
 }
+  LineCommand.prototype.setLocationStart = function setLocationStart(event){
+    this.startx = event.clientX - this.bounds.left;
+    this.starty = event.clientY - this.bounds.top;
+    console.log(this.startx, this.starty)
+
+  }
   LineCommand.prototype.setLocation = function setLocation(event){
     this.endx = event.clientX - this.bounds.left;
     this.endy = event.clientY - this.bounds.top;
+    console.log(this.endx, this.endy)
+
 
 }
   LineCommand.prototype.execute = function execute(){
     this.ctx.beginPath();
-    this.ctx.moveTo(this.startx, this.startx);
-    this.ctx.lineTo(this.endx, this.endy );
+    this.ctx.moveTo(this.endx, this.endy);
+    this.ctx.lineTo(this.startx, this.starty);
     this.ctx.stroke();
 
   }
@@ -252,7 +260,7 @@ let controller = new canvasController(model);
 
 
 const btnArr = [document.getElementById('circle'),
-document.getElementById('circle2'), document.getElementById('arrow'),
+document.getElementById('circle2'), document.getElementById('line'),
 document.getElementById('clear'), document.getElementById('eraser')]
 
 
@@ -272,10 +280,8 @@ canvasBtn.addEventListener('click', (e) => {
   if (heldShift == 1) {
     click = 1;
   }
-  else {
-    controller.updateModel(e);
-
-  }
+  
+  controller.updateModel(e);
 
 })
 
@@ -299,39 +305,26 @@ document.addEventListener('keydown', (e) => {
     }
     Timeout();
   }
-  else if(e.code == "ControlLeft"){
-    heldCtrl = 1;
-    console.log("hello boi")
-  }
-
 })
 
 document.addEventListener("mousedown", (e) => {
-  if (heldCtrl == 1) {
-    console.log("line creation")
-    heldLeftClick = 1;
-    controller.createCommand("line", e)
-  }
-})
-
-document.addEventListener("mouseup", (e) =>{
-  if(heldCtrl == 1){
-    controller.updateModel(e);
+  console.log("mousedown")
+  if (controller.currcommandType == "line"){
+    controller.currcommand.setLocationStart(e)
   }
 })
 
 document.addEventListener('keyup', (e) => {
   if (e.code == "ShiftLeft" || e.code == "ControlLeft") {
     heldShift = 0;
-    heldLeftClick = 0;
     heldCtrl = 0;
   }
 
 })
 
 let heldShift = 0; // will help to identify shift + click
-let heldCtrl = 0;
-let heldLeftClick = 0;
 let click = 0; // will help to identify shift + click
 let clickevent = null;
 
+// todo: improve the eraser accuracy
+// todo: add line feautre
