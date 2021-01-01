@@ -36,6 +36,7 @@ class canvasController {
       if (this.currcommandType == "eraser"){
         document.getElementsByTagName("body")[0].style.cursor = 
         "url('images/eraserIcon.png'), auto";
+        
       }
       else{
         document.getElementsByTagName("body")[0].style.cursor = "default"
@@ -82,15 +83,26 @@ class canvasModel {
     this.observers =[];
 }
   canvasModel.prototype.removeObserver = function  removeObserver(event) {
+    let x =  event.clientX - this.bounds.left
+    let y = event.clientY - this.bounds.top
     for (i = 0; i<this.observers.length; i++) {
-    if (Math.abs(this.observers[i].xcord - (event.clientX - this.bounds.left))
-    <= 35 &&
-    Math.abs(this.observers[i].ycord - (event.clientY - this.bounds.top))
-    <= 35) {
-      removed = this.observers[i];
-      this.observers.splice(i, 1);
-      return removed;
-    }
+
+      if (Math.abs(this.observers[i].xcord - x ) <= 35 &&
+      Math.abs(this.observers[i].ycord - y) <= 35) {
+        removed = this.observers[i];
+        this.observers.splice(i, 1);
+        return removed;
+      }
+
+      else if(this.observers[i].name == "LineCommand"){
+        if (Math.abs(this.observers[i].slope*x + this.observers[i].b -  -1 * y)
+        <= 30){
+          removed = this.observers[i];
+          this.observers.splice(i, 1);
+          return removed;
+
+        }
+      }
   }
 }
 
@@ -185,10 +197,22 @@ class EraserCommand {
 
   EraserCommand.prototype.execute = function execute(shape) {
     shape.ctx.beginPath();
-    shape.ctx.arc(shape.xcord, shape.ycord, 45, 0, 2 * Math.PI);
-    shape.ctx.fillStyle = "white";
-    shape.ctx.fill();
+    if (shape.name == "CircleCommand" || shape.name == "DoubleCircleCommand"){
+      shape.ctx.arc(shape.xcord, shape.ycord, 45, 0, 2 * Math.PI);
+      shape.ctx.fillStyle = "white";
+      shape.ctx.fill();
+    }
+    // must be a line
+    else{
+      shape.ctx.strokeStyle = "white";
+      shape.ctx.lineWidth = 10;
+      shape.execute();
 
+      shape.ctx.strokeStyle = "black";
+      shape.ctx.lineWidth = 1;
+
+
+    }
 }
 
 // ---------- The Label Command ----------- //
@@ -229,6 +253,8 @@ class LineCommand{
     this.starty = 0
     this.endx = 0;
     this.endy = 0;
+    this.slope = 0;
+    this.b = 0;
   }
 }
   LineCommand.prototype.setLocationStart = function setLocationStart(event){
@@ -239,6 +265,9 @@ class LineCommand{
     this.endx = event.clientX - this.bounds.left;
     this.endy = event.clientY - this.bounds.top;
 
+    this.slope = (-1 * this.endy + this.starty) / (this.endx - this.startx)
+    this.b = -1 * this.endy - (this.slope*this.endx)
+
 
 }
   LineCommand.prototype.execute = function execute(){
@@ -247,6 +276,25 @@ class LineCommand{
     this.ctx.lineTo(this.startx, this.starty);
     this.ctx.stroke();
 
+
+    this.ctx.beginPath();
+    canvas_arrow(this.ctx, this.startx, this.starty, this.endx, this.endy)
+    this.ctx.stroke();
+
+
+
+  }
+
+  function canvas_arrow(context, fromx, fromy, tox, toy) {
+    var headlen = 10; // length of head in pixels
+    var dx = tox - fromx;
+    var dy = toy - fromy;
+    var angle = Math.atan2(dy, dx);
+    context.moveTo(fromx, fromy);
+    context.lineTo(tox, toy);
+    context.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
+    context.moveTo(tox, toy);
+    context.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
   }
 
 
@@ -325,4 +373,7 @@ let heldShift = 0; // will help to identify shift + click
 let click = 0; // will help to identify shift + click
 let clickevent = null;
 
-// todo: improve the eraser accuracy
+// todo: error when erasing labels
+// todo: always center label(maybe use canvasinput library instead)
+// todo: curvy transition which goes to the circle itself
+// todo : undo button (have to store previous states of the canvas)
