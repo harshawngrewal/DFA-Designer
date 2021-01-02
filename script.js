@@ -14,6 +14,8 @@ class canvasController {
 
   canvasController.prototype.createCommand = function createCommand(commandType, e) {
     if (commandType == "clear" || commandType == "input") {
+      this.currcommand = null;
+      this.currcommandType = null;
       if (commandType == "clear") {
         this.canvasModel.removeAllObservers();
         this.clearCommand.execute();
@@ -95,8 +97,9 @@ class canvasModel {
       }
 
       else if(this.observers[i].name == "LineCommand"){
-        if (Math.abs(this.observers[i].slope*x + this.observers[i].b -  -1 * y)
-        <= 30){
+        if ((this.observers[i].startx - 15 <= x && x <= this.observers[i].endx + 15) 
+        && (this.observers[i].starty - 15 <= y && y <= this.observers[i].endy + 15)){
+          // console.log("removed")
           removed = this.observers[i];
           this.observers.splice(i, 1);
           return removed;
@@ -201,6 +204,7 @@ class EraserCommand {
       shape.ctx.arc(shape.xcord, shape.ycord, 45, 0, 2 * Math.PI);
       shape.ctx.fillStyle = "white";
       shape.ctx.fill();
+      shape.ctx.fillStyle = "black";
     }
     // must be a line
     else{
@@ -238,6 +242,7 @@ class LabelCommand {
     this.txt = document.getElementById("fname").value;
     this.canvas.getContext('2d').fillText
     (this.txt, this.xcord - 2 * this.txt.length, this.ycord);
+    console.log("checkpoint", this.txt, this.xcord - 2 * this.txt.length, this.ycord)
 
 }
 
@@ -253,8 +258,6 @@ class LineCommand{
     this.starty = 0
     this.endx = 0;
     this.endy = 0;
-    this.slope = 0;
-    this.b = 0;
   }
 }
   LineCommand.prototype.setLocationStart = function setLocationStart(event){
@@ -264,10 +267,6 @@ class LineCommand{
   LineCommand.prototype.setLocation = function setLocation(event){
     this.endx = event.clientX - this.bounds.left;
     this.endy = event.clientY - this.bounds.top;
-
-    this.slope = (-1 * this.endy + this.starty) / (this.endx - this.startx)
-    this.b = -1 * this.endy - (this.slope*this.endx)
-
 
 }
   LineCommand.prototype.execute = function execute(){
@@ -339,6 +338,7 @@ document.addEventListener('keydown', (e) => {
       timeout = setTimeout(function () {
 
         if (click == 1 && heldShift == 1) {
+          console.log("checkpoint")
           controller.createCommand('input', clickevent);
         }
         if (heldShift == 1) {
@@ -362,9 +362,8 @@ document.addEventListener("mousedown", (e) => {
 })
 
 document.addEventListener('keyup', (e) => {
-  if (e.code == "ShiftLeft" || e.code == "ControlLeft") {
+  if (e.code == "ShiftLeft") {
     heldShift = 0;
-    heldCtrl = 0;
   }
 
 })
@@ -373,7 +372,6 @@ let heldShift = 0; // will help to identify shift + click
 let click = 0; // will help to identify shift + click
 let clickevent = null;
 
-// todo: error when erasing labels
 // todo: always center label(maybe use canvasinput library instead)
 // todo: curvy transition which goes to the circle itself
 // todo : undo button (have to store previous states of the canvas)
