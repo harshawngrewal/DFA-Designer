@@ -1,4 +1,18 @@
-
+// var input = new CanvasInput({
+//   canvas: document.getElementById('canvas'),
+//   fontSize: 18,
+//   fontFamily: 'Arial',
+//   fontColor: '#212121',
+//   fontWeight: 'bold',
+//   width: 300,
+//   padding: 8,
+//   borderWidth: 1,
+//   borderColor: '#000',
+//   borderRadius: 3,
+//   boxShadow: '1px 1px 0px #fff',
+//   innerShadow: '0px 0px 5px rgba(0, 0, 0, 0.5)',
+//   placeHolder: 'Enter message here...'
+// });
 // --------------here is the code for the controller --------
 class canvasController {
   constructor(canvasModel) {
@@ -13,18 +27,13 @@ class canvasController {
 }
 
   canvasController.prototype.createCommand = function createCommand(commandType, e) {
-    if (commandType == "clear" || commandType == "input") {
+    if (commandType == "clear" || commandType == "input" 
+    || commandType == "mouse") {
       this.currcommand = null;
       this.currcommandType = null;
       if (commandType == "clear") {
         this.canvasModel.removeAllObservers();
         this.clearCommand.execute();
-      }
-      else {
-        command = new LabelCommand(this.canvasModel);
-        command.setLocation(e);
-        this.canvasModel.addObserver(command); // we skip straight to this 
-        // step because adding labels is not a 2 step process like the others
       }
       document.getElementsByTagName("body")[0].style.cursor = "default"
 
@@ -39,6 +48,11 @@ class canvasController {
         document.getElementsByTagName("body")[0].style.cursor = 
         "url('images/eraserIcon.png'), auto";
         
+      }
+      else if(this.currcommandType == "line"){
+        document.getElementsByTagName("body")[0].style.cursor = 
+        "url('images/arrow-outline.png'), auto";
+
       }
       else{
         document.getElementsByTagName("body")[0].style.cursor = "default"
@@ -82,11 +96,19 @@ class canvasModel {
 }
 
   canvasModel.prototype.removeAllObservers = function removeAllObservers() {
+    for (i = 0; i < this.observers.length; i++){
+      if (this.observers[i].name == "CircleCommand" || this.observers[i].name
+      == "DoubleCircleCommand"){
+        this.observers[i].input.destroy();
+      }
+
+    } 
     this.observers =[];
 }
   canvasModel.prototype.removeObserver = function  removeObserver(event) {
     let x =  event.clientX - this.bounds.left
     let y = event.clientY - this.bounds.top
+   
     for (i = 0; i<this.observers.length; i++) {
 
       if (Math.abs(this.observers[i].xcord - x ) <= 35 &&
@@ -97,8 +119,10 @@ class canvasModel {
       }
 
       else if(this.observers[i].name == "LineCommand"){
-        if ((this.observers[i].startx - 15 <= x && x <= this.observers[i].endx + 15) 
-        && (this.observers[i].starty - 15 <= y && y <= this.observers[i].endy + 15)){
+        if (((this.observers[i].startx - 10 <= x && x <= this.observers[i].endx + 10)
+        || (this.observers[i].startx + 10 >=  x && x >= this.observers[i].endx - 10))
+        && ((this.observers[i].starty - 10 <= y && y <= this.observers[i].endy + 10) ||
+        (this.observers[i].starty + 10 >= y && y >= this.observers[i].endy - 10))){
           // console.log("removed")
           removed = this.observers[i];
           this.observers.splice(i, 1);
@@ -110,15 +134,67 @@ class canvasModel {
 }
 
   canvasModel.prototype.addObserver = function   addObserver(object) {
-    this.observers.push(object);
-    object.execute(); // every command will have an execute method
+    // must check that there is no object existing in that location
+    isCircle = object.name == "CircleCommand" || object.name == "DoubleCircleCommand"
+    isLine = object.name == "LineCommand"
+    doesIntersect = false
+
+    for (i = 0; i < this.observers.length; i++ ){
+      currObserver = this.observers[i]
+      if (currObserver == "LineCommand"){
+
+        if (isLine){
+          doesIntersect = checkLineLineIntersection(currObserver, object)
+        }
+        else{
+          doesIntersect = checkCircleLineIntersection(currObserver, object)
+        }
+      }
+
+      else if(isCircle){
+        doesIntersect = checkCircleCircleIntersection(currObserver, object)
+      }
+
+      else{
+        doesIntersect = checkCircleLineIntersection(currObserver, object)
+      }
+    }
+    if (doesIntersect == false ){
+      this.observers.push(object);
+      object.execute(); // every command will have an execute method
     // console.log(this.observers.length)
+    }
+
+}
+
+function checkCircleLineIntersection(circle, line){
+  return false
+
+}
+
+function checkCircleCircleIntersection(circle1, circle2){
+  return false
+}
+
+function checkLineLineIntersection(line1, line2){
+  return false
+}
+
+
+function createDefaultLabel(x1, y1){
+  return new CanvasInput({
+    canvas: document.getElementById('canvas'),
+    x: x1 - 22,
+    y: y1 - 10,
+    width: 30,
+    height: 8,
+    fontSize: 10
+  });
 
 }
 
 
-
-// --------- CirlceComamnd -------- //
+// --------- CircleCommand -------- //
 class CircleCommand {
   constructor(canvasModel) {
     this.name = "CircleCommand";
@@ -127,6 +203,7 @@ class CircleCommand {
     this.ctx = this.canvas.getContext('2d');
     this.xcord = 0
     this.ycord = 0;
+    this.input = null;
   }
 }
 
@@ -140,6 +217,7 @@ class CircleCommand {
     this.ctx.beginPath();
     this.ctx.arc(this.xcord, this.ycord, 35, 0, 2 * Math.PI);
     this.ctx.stroke();
+    this.input = createDefaultLabel(this.xcord, this.ycord)
 
 }
 
@@ -152,6 +230,7 @@ class DoubleCircleCommand {
     this.ctx = this.canvas.getContext('2d');
     this.xcord = 0;
     this.ycord = 0;
+    this.input = null;
 
   }
 
@@ -171,6 +250,8 @@ class DoubleCircleCommand {
     this.ctx.beginPath();
     this.ctx.arc(this.xcord, this.ycord, 25, 0, 2 * Math.PI);
     this.ctx.stroke();
+    this.input = createDefaultLabel(this.xcord, this.ycord)
+
 
 }
 
@@ -201,6 +282,7 @@ class EraserCommand {
   EraserCommand.prototype.execute = function execute(shape) {
     shape.ctx.beginPath();
     if (shape.name == "CircleCommand" || shape.name == "DoubleCircleCommand"){
+      shape.input.destroy();
       shape.ctx.arc(shape.xcord, shape.ycord, 45, 0, 2 * Math.PI);
       shape.ctx.fillStyle = "white";
       shape.ctx.fill();
@@ -218,34 +300,6 @@ class EraserCommand {
 
     }
 }
-
-// ---------- The Label Command ----------- //
-class LabelCommand {
-  constructor(canvasModel) {
-    this.name = "LabelCommand";
-    this.canvas = canvasModel.canvas;
-    this.xcord = 0;
-    this.ycord = 0;
-    this.txt = "";
-  }
-}
-
-  LabelCommand.prototype.setLocation = function setLocation(event) {
-    let bounds = this.canvas.getBoundingClientRect();
-    this.xcord = event.clientX - bounds.left;
-    this.ycord = event.clientY - bounds.top;
-}
-
-
-
-  LabelCommand.prototype.execute = function execute() {
-    this.txt = document.getElementById("fname").value;
-    this.canvas.getContext('2d').fillText
-    (this.txt, this.xcord - 2 * this.txt.length, this.ycord);
-    console.log("checkpoint", this.txt, this.xcord - 2 * this.txt.length, this.ycord)
-
-}
-
 // ---------- The Line Command ----------- //
 
 class LineCommand{
@@ -274,6 +328,7 @@ class LineCommand{
     this.ctx.moveTo(this.endx, this.endy);
     this.ctx.lineTo(this.startx, this.starty);
     this.ctx.stroke();
+    // console.log(this.startx, this.endx, this.starty, this.endy)
 
 
     this.ctx.beginPath();
@@ -306,7 +361,8 @@ let controller = new canvasController(model);
 
 const btnArr = [document.getElementById('circle'),
 document.getElementById('circle2'), document.getElementById('line'),
-document.getElementById('clear'), document.getElementById('eraser')]
+document.getElementById('clear'), document.getElementById('eraser'),
+document.getElementById("mouse")]
 
 
 
@@ -321,37 +377,7 @@ const canvasBtn = document.getElementById('canvas');
 
 
 canvasBtn.addEventListener('click', (e) => {
-  clickevent = e;
-  if (heldShift == 1) {
-    click = 1;
-  }
-  else{
-    controller.updateModel(e);
-  }
-
-})
-
-document.addEventListener('keydown', (e) => {
-  if (e.code == "ShiftLeft") {
-    heldShift = 1;
-    function Timeout() {
-      timeout = setTimeout(function () {
-
-        if (click == 1 && heldShift == 1) {
-          console.log("checkpoint")
-          controller.createCommand('input', clickevent);
-        }
-        if (heldShift == 1) {
-          Timeout();
-        }
-        click = 0;
-
-
-      }, 100)
-
-    }
-    Timeout();
-  }
+  controller.updateModel(e);
 })
 
 document.addEventListener("mousedown", (e) => {
@@ -361,17 +387,8 @@ document.addEventListener("mousedown", (e) => {
   }
 })
 
-document.addEventListener('keyup', (e) => {
-  if (e.code == "ShiftLeft") {
-    heldShift = 0;
-  }
+// todo: should be able to edit any circle label without adding the current 
+// selected shape
 
-})
-
-let heldShift = 0; // will help to identify shift + click
-let click = 0; // will help to identify shift + click
-let clickevent = null;
-
-// todo: always center label(maybe use canvasinput library instead)
 // todo: curvy transition which goes to the circle itself
 // todo : undo button (have to store previous states of the canvas)
