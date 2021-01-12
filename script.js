@@ -1,18 +1,4 @@
-// var input = new CanvasInput({
-//   canvas: document.getElementById('canvas'),
-//   fontSize: 18,
-//   fontFamily: 'Arial',
-//   fontColor: '#212121',
-//   fontWeight: 'bold',
-//   width: 300,
-//   padding: 8,
-//   borderWidth: 1,
-//   borderColor: '#000',
-//   borderRadius: 3,
-//   boxShadow: '1px 1px 0px #fff',
-//   innerShadow: '0px 0px 5px rgba(0, 0, 0, 0.5)',
-//   placeHolder: 'Enter message here...'
-// });
+
 // --------------here is the code for the controller --------
 class canvasController {
   constructor(canvasModel) {
@@ -138,10 +124,12 @@ class canvasModel {
     isCircle = object.name == "CircleCommand" || object.name == "DoubleCircleCommand"
     isLine = object.name == "LineCommand"
     doesIntersect = false
+    // console.log("checkpoint", isCircle, isLine)
 
     for (i = 0; i < this.observers.length; i++ ){
       currObserver = this.observers[i]
-      if (currObserver == "LineCommand"){
+      if (currObserver.name == "LineCommand"){
+
 
         if (isLine){
           doesIntersect = checkLineLineIntersection(currObserver, object)
@@ -157,6 +145,9 @@ class canvasModel {
 
       else{
         doesIntersect = checkCircleLineIntersection(currObserver, object)
+      }
+      if (doesIntersect){
+        return;
       }
     }
     if (doesIntersect == false ){
@@ -177,6 +168,20 @@ function checkCircleCircleIntersection(circle1, circle2){
 }
 
 function checkLineLineIntersection(line1, line2){
+  if (line1.m == line2.m){
+    return line1.b == line2.b
+  }
+
+  intersection = (line2.b - line1.b)/(line1.m - line2.m)
+  contains_intersect1 =  (line1.startx <= intersection && intersection <= line1.endx) ||
+    (line1.endx <= intersection && intersection <= line1.startx)
+  contains_intersect2 =  (line2.startx <= intersection && intersection <= line2.endx) ||
+    (line2.endx <= intersection && intersection <= line2.startx)
+
+
+  if (contains_intersect1 && contains_intersect2){
+      return true
+    }
   return false
 }
 
@@ -312,6 +317,8 @@ class LineCommand{
     this.starty = 0
     this.endx = 0;
     this.endy = 0;
+    this.m = 0;
+    this.b;
   }
 }
   LineCommand.prototype.setLocationStart = function setLocationStart(event){
@@ -321,6 +328,8 @@ class LineCommand{
   LineCommand.prototype.setLocation = function setLocation(event){
     this.endx = event.clientX - this.bounds.left;
     this.endy = event.clientY - this.bounds.top;
+    this.m = (this.endy - this.starty)/(this.endx - this.startx)
+    this.b = this.starty - this.m*this.startx
 
 }
   LineCommand.prototype.execute = function execute(){
