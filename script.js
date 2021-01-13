@@ -409,9 +409,10 @@ function loadScript(url)
     script.type = 'text/javascript';
     script.src = url;
     head.appendChild(script);
+    console.log("worked")
 }
 
-loadScript('/CanvasInput-master/CanvasInput.js');
+loadScript('CanvasInput-master/CanvasInput.js');
 
 // todo: should be able to edit any circle label without adding the current 
 // selected shape
