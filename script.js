@@ -402,6 +402,17 @@ document.addEventListener("mousedown", (e) => {
   }
 })
 
+function loadScript(url)
+{    
+    var head = document.getElementsByTagName('head')[0];
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = url;
+    head.appendChild(script);
+}
+
+loadScript('/CanvasInput-master/CanvasInput.js');
+
 // todo: should be able to edit any circle label without adding the current 
 // selected shape
 
