@@ -121,13 +121,13 @@ class canvasModel {
 
   canvasModel.prototype.addObserver = function   addObserver(object) {
     // must check that there is no object existing in that location
-    isCircle = object.name == "CircleCommand" || object.name == "DoubleCircleCommand"
-    isLine = object.name == "LineCommand"
-    doesIntersect = false
+    let isCircle = object.name == "CircleCommand" || object.name == "DoubleCircleCommand"
+    let isLine = object.name == "LineCommand"
+    let doesIntersect = false
     // console.log("checkpoint", isCircle, isLine)
 
     for (i = 0; i < this.observers.length; i++ ){
-      currObserver = this.observers[i]
+      let currObserver = this.observers[i]
       if (currObserver.name == "LineCommand"){
 
 
@@ -164,7 +164,13 @@ function checkCircleLineIntersection(circle, line){
 }
 
 function checkCircleCircleIntersection(circle1, circle2){
-  return false
+  let distance =Math.sqrt((circle1.xcord - circle2.xcord) ** 2 +
+    (circle1.ycord - circle2.ycord) **2)
+  
+  if (distance < 70){
+    return true
+  }
+  return false;
 }
 
 function checkLineLineIntersection(line1, line2){
