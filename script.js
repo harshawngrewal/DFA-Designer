@@ -159,7 +159,11 @@ class canvasModel {
 }
 
 function checkCircleLineIntersection(circle, line){
-  return false
+  distance = Math.abs (line.m * circle.xcord - circle.ycord + line.b) /
+    Math.sqrt(line.m*line.m + 1)
+  console.log(distance)
+
+  return distance <= 35
 
 }
 
@@ -409,7 +413,6 @@ function loadScript(url)
     script.type = 'text/javascript';
     script.src = url;
     head.appendChild(script);
-    console.log("worked")
 }
 
 loadScript('CanvasInput-master/CanvasInput.js');
