@@ -7,8 +7,8 @@ class canvasController {
     this.currcommandType = null;
 
     // only need one instance of these commands 
-    this.clearCommand = new ClearCommand(this.canvasModel) 
-    this.eraserCommand = new EraserCommand(this.canvasModel)
+    this.clearCommand = new ClearCommand(this.canvasModel);
+    this.eraserCommand = new EraserCommand(this.canvasModel);
   }
 }
 
@@ -21,7 +21,7 @@ class canvasController {
         this.canvasModel.removeAllObservers();
         this.clearCommand.execute();
       }
-      document.getElementsByTagName("body")[0].style.cursor = "default"
+      document.getElementsByTagName("body")[0].style.cursor = "default";
 
     }
     else {
@@ -41,7 +41,7 @@ class canvasController {
 
       }
       else{
-        document.getElementsByTagName("body")[0].style.cursor = "default"
+        document.getElementsByTagName("body")[0].style.cursor = "default";
 
       }
     }
@@ -64,9 +64,9 @@ class canvasController {
         this.currcommand = new CircleCommand(this.canvasModel);
       }
       else if (this.currcommandType == "circle2") {
-        this.currcommand = new DoubleCircleCommand(this.canvasModel)
+        this.currcommand = new DoubleCircleCommand(this.canvasModel);
       }
-      this.currcommand.setLocation(e)
+      this.currcommand.setLocation(e);
       this.canvasModel.addObserver(this.currcommand);
     }
   }
@@ -92,8 +92,8 @@ class canvasModel {
     this.observers =[];
 }
   canvasModel.prototype.removeObserver = function  removeObserver(event) {
-    let x =  event.clientX - this.bounds.left
-    let y = event.clientY - this.bounds.top
+    let x =  event.clientX - this.bounds.left;
+    let y = event.clientY - this.bounds.top;
    
     for (i = 0; i<this.observers.length; i++) {
 
@@ -121,9 +121,9 @@ class canvasModel {
 
   canvasModel.prototype.addObserver = function   addObserver(object) {
     // must check that there is no object existing in that location
-    let isCircle = object.name == "CircleCommand" || object.name == "DoubleCircleCommand"
-    let isLine = object.name == "LineCommand"
-    let doesIntersect = false
+    let isCircle = object.name == "CircleCommand" || object.name == "DoubleCircleCommand";
+    let isLine = object.name == "LineCommand";
+    let doesIntersect = false;
     // console.log("checkpoint", isCircle, isLine)
 
     for (i = 0; i < this.observers.length; i++ ){
@@ -132,19 +132,19 @@ class canvasModel {
 
 
         if (isLine){
-          doesIntersect = checkLineLineIntersection(currObserver, object)
+          doesIntersect = checkLineLineIntersection(currObserver, object);
         }
         else{
-          doesIntersect = checkCircleLineIntersection(currObserver, object)
+          doesIntersect = checkCircleLineIntersection(currObserver, object);
         }
       }
 
       else if(isCircle){
-        doesIntersect = checkCircleCircleIntersection(currObserver, object)
+        doesIntersect = checkCircleCircleIntersection(currObserver, object);
       }
 
       else{
-        doesIntersect = checkCircleLineIntersection(currObserver, object)
+        doesIntersect = checkCircleLineIntersection(currObserver, object);
       }
       if (doesIntersect){
         return;
@@ -176,7 +176,7 @@ function checkCircleLineIntersection(circle, line){
   u1 = (b - d) / c;  // these represent the unit distance of point one and two on the line
   u2 = (b + d) / c;    
   retP1 = {};   // return points
-  retP2 = {}  
+  retP2 = {};
   ret = []; // return array
   if(u1 <= 1 && u1 >= 0){  // add point if on the line segment
       retP1.x = line.startx + v1.x * u1;
@@ -194,30 +194,31 @@ function checkCircleLineIntersection(circle, line){
 
 function checkCircleCircleIntersection(circle1, circle2){
   let distance =Math.sqrt((circle1.xcord - circle2.xcord) ** 2 +
-    (circle1.ycord - circle2.ycord) **2)
+    (circle1.ycord - circle2.ycord) **2);
   
   if (distance < 70){
-    return true
+    return true;
   }
   return false;
 }
 
 function checkLineLineIntersection(line1, line2){
-  if (line1.m == line2.m){
-    return line1.b == line2.b
-  }
+  return false;
+  // if (line1.m == line2.m){
+  //   return line1.b == line2.b
+  // }
 
-  intersection = (line2.b - line1.b)/(line1.m - line2.m)
-  contains_intersect1 =  (line1.startx <= intersection && intersection <= line1.endx) ||
-    (line1.endx <= intersection && intersection <= line1.startx)
-  contains_intersect2 =  (line2.startx <= intersection && intersection <= line2.endx) ||
-    (line2.endx <= intersection && intersection <= line2.startx)
+  // intersection = (line2.b - line1.b)/(line1.m - line2.m)
+  // contains_intersect1 =  (line1.startx <= intersection && intersection <= line1.endx) ||
+  //   (line1.endx <= intersection && intersection <= line1.startx)
+  // contains_intersect2 =  (line2.startx <= intersection && intersection <= line2.endx) ||
+  //   (line2.endx <= intersection && intersection <= line2.startx)
 
 
-  if (contains_intersect1 && contains_intersect2){
-      return true
-    }
-  return false
+  // if (contains_intersect1 && contains_intersect2){
+  //     return true
+  //   }
+  // return false
 }
 
 
@@ -241,7 +242,7 @@ class CircleCommand {
     this.label = "";
     this.canvas = canvasModel.canvas;
     this.ctx = this.canvas.getContext('2d');
-    this.xcord = 0
+    this.xcord = 0;
     this.ycord = 0;
     this.input = null;
   }
@@ -257,7 +258,7 @@ class CircleCommand {
     this.ctx.beginPath();
     this.ctx.arc(this.xcord, this.ycord, 35, 0, 2 * Math.PI);
     this.ctx.stroke();
-    this.input = createDefaultLabel(this.xcord, this.ycord)
+    this.input = createDefaultLabel(this.xcord, this.ycord);
 
 }
 
@@ -290,7 +291,7 @@ class DoubleCircleCommand {
     this.ctx.beginPath();
     this.ctx.arc(this.xcord, this.ycord, 25, 0, 2 * Math.PI);
     this.ctx.stroke();
-    this.input = createDefaultLabel(this.xcord, this.ycord)
+    this.input = createDefaultLabel(this.xcord, this.ycord);
 
 
 }
@@ -305,8 +306,7 @@ class ClearCommand {
   }
 }
   ClearCommand.prototype.execute = function execute() {
-    this.canvas.getContext("2d").clearRect(0, 0, this.canvas.width,
-    this.canvas.height);
+    this.canvas.getContext("2d").clearRect(0, 0, this.canvas.width, this.canvas.height);
 
 }
 
@@ -314,7 +314,7 @@ class ClearCommand {
 // ------- Erase Command -----
 class EraserCommand {
   constructor(canvasModel) {
-    this.name = "EraserCommand"
+    this.name = "EraserCommand";
     this.canvas = canvasModel.canvas;
   }
 }
@@ -348,8 +348,8 @@ class LineCommand{
     this.canvas = canvasModel.canvas;
     this.ctx = this.canvas.getContext('2d');
     this.bounds = this.canvas.getBoundingClientRect();
-    this.startx = 0
-    this.starty = 0
+    this.startx = 0;
+    this.starty = 0;
     this.endx = 0;
     this.endy = 0;
     this.m = 0;
@@ -363,8 +363,8 @@ class LineCommand{
   LineCommand.prototype.setLocation = function setLocation(event){
     this.endx = event.clientX - this.bounds.left;
     this.endy = event.clientY - this.bounds.top;
-    this.m = (this.endy - this.starty)/(this.endx - this.startx)
-    this.b = this.starty - this.m*this.startx
+    this.m = (this.endy - this.starty)/(this.endx - this.startx);
+    this.b = this.starty - this.m*this.startx;
 
 }
   LineCommand.prototype.execute = function execute(){
@@ -376,7 +376,7 @@ class LineCommand{
 
 
     this.ctx.beginPath();
-    canvas_arrow(this.ctx, this.startx, this.starty, this.endx, this.endy)
+    canvas_arrow(this.ctx, this.startx, this.starty, this.endx, this.endy);
     this.ctx.stroke();
 
 
@@ -399,14 +399,14 @@ class LineCommand{
 
 // here we setup of the entire GUI MVC// 
 
-let model = new canvasModel(document.getElementById("canvas"))
+let model = new canvasModel(document.getElementById("canvas"));
 let controller = new canvasController(model);
 
 
 const btnArr = [document.getElementById('circle'),
 document.getElementById('circle2'), document.getElementById('line'),
 document.getElementById('clear'), document.getElementById('eraser'),
-document.getElementById("mouse")]
+document.getElementById("mouse")];
 
 
 
@@ -426,8 +426,8 @@ canvasBtn.addEventListener('click', (e) => {
 
 document.addEventListener("mousedown", (e) => {
   if (controller.currcommandType == "line"){
-    controller.currcommand = new LineCommand(controller.canvasModel)
-    controller.currcommand.setLocationStart(e)
+    controller.currcommand = new LineCommand(controller.canvasModel);
+    controller.currcommand.setLocationStart(e);
   }
 })
 
