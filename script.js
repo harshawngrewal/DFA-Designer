@@ -159,13 +159,38 @@ class canvasModel {
 }
 
 function checkCircleLineIntersection(circle, line){
-  distance = Math.abs (line.m * circle.xcord - circle.ycord + line.b) /
-    Math.sqrt(line.m*line.m + 1)
-  console.log(distance)
-
-  return distance <= 35
-
-}
+  var b, c, d, u1, u2, ret, retP1, retP2, v1, v2;
+  v1 = {};
+  v2 = {};
+  v1.x = line.endx - line.startx;
+  v1.y = line.endy - line.starty;
+  v2.x = line.startx - circle.xcord;
+  v2.y = line.starty - circle.ycord;
+  b = (v1.x * v2.x + v1.y * v2.y);
+  c = 2 * (v1.x * v1.x + v1.y * v1.y);
+  b *= -2;
+  d = Math.sqrt(b * b - 2 * c * (v2.x * v2.x + v2.y * v2.y - 35 * 35));
+  if(isNaN(d)){ // no intercept
+    return false;
+  }
+  u1 = (b - d) / c;  // these represent the unit distance of point one and two on the line
+  u2 = (b + d) / c;    
+  retP1 = {};   // return points
+  retP2 = {}  
+  ret = []; // return array
+  if(u1 <= 1 && u1 >= 0){  // add point if on the line segment
+      retP1.x = line.startx + v1.x * u1;
+      retP1.y = line.stat + v1.y * u1;
+      ret[0] = retP1;
+  }
+  if(u2 <= 1 && u2 >= 0){  // second add point if on the line segment
+      retP2.x = line.startx + v1.x * u2;
+      retP2.y = line.starty + v1.y * u2;
+      ret[ret.length] = retP2;
+  }
+  console.log(ret)
+  return ret.length > 0;    
+ }
 
 function checkCircleCircleIntersection(circle1, circle2){
   let distance =Math.sqrt((circle1.xcord - circle2.xcord) ** 2 +
@@ -417,8 +442,6 @@ function loadScript(url)
 
 loadScript('CanvasInput-master/CanvasInput.js');
 
-// todo: should be able to edit any circle label without adding the current 
-// selected shape
 
 // todo: curvy transition which goes to the circle itself
 // todo : undo button (have to store previous states of the canvas)
