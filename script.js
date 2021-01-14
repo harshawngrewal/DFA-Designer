@@ -96,25 +96,25 @@ class canvasModel {
     let y = event.clientY - this.bounds.top;
    
     for (i = 0; i<this.observers.length; i++) {
+      let shape = this.observers[i];
+      // console.log(shape.startx, shape.endx, shape.starty, shape.endy, shape.m ,y);
 
-      if (Math.abs(this.observers[i].xcord - x ) <= 35 &&
-      Math.abs(this.observers[i].ycord - y) <= 35) {
-        removed = this.observers[i];
-        this.observers.splice(i, 1);
-        return removed;
-      }
+      if(this.observers[i].name == "LineCommand"){
+        if (((shape.startx - 5 <= x && x <= shape.endx + 5) || (shape.startx + 5 >=  x &&
+           x >= shape.endx - 5)) && Math.abs(shape.m * x + shape.b - y) <= 15){
 
-      else if(this.observers[i].name == "LineCommand"){
-        if (((this.observers[i].startx - 10 <= x && x <= this.observers[i].endx + 10)
-        || (this.observers[i].startx + 10 >=  x && x >= this.observers[i].endx - 10))
-        && ((this.observers[i].starty - 10 <= y && y <= this.observers[i].endy + 10) ||
-        (this.observers[i].starty + 10 >= y && y >= this.observers[i].endy - 10))){
-          // console.log("removed")
           removed = this.observers[i];
           this.observers.splice(i, 1);
           return removed;
 
         }
+      }
+      
+      else if (Math.abs(this.observers[i].xcord - x ) <= 35 &&
+      Math.abs(this.observers[i].ycord - y) <= 35) {
+        removed = this.observers[i];
+        this.observers.splice(i, 1);
+        return removed;
       }
   }
 }
@@ -363,8 +363,10 @@ class LineCommand{
   LineCommand.prototype.setLocation = function setLocation(event){
     this.endx = event.clientX - this.bounds.left;
     this.endy = event.clientY - this.bounds.top;
-    this.m = (this.endy - this.starty)/(this.endx - this.startx);
-    this.b = this.starty - this.m*this.startx;
+    if (this.endx - this.startx != 0){
+      this.m = (this.endy - this.starty)/(this.endx - this.startx);
+      this.b = this.starty - this.m*this.startx;
+    }
 
 }
   LineCommand.prototype.execute = function execute(){
@@ -441,7 +443,6 @@ function loadScript(url)
 }
 
 loadScript('CanvasInput-master/CanvasInput.js');
-
 
 // todo: curvy transition which goes to the circle itself
 // todo : undo button (have to store previous states of the canvas)
