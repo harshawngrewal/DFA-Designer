@@ -404,7 +404,6 @@ class LineCommand{
 let model = new canvasModel(document.getElementById("canvas"));
 let controller = new canvasController(model);
 
-
 const btnArr = [document.getElementById('circle'),
 document.getElementById('circle2'), document.getElementById('line'),
 document.getElementById('clear'), document.getElementById('eraser'),
@@ -433,6 +432,13 @@ document.addEventListener("mousedown", (e) => {
   }
 })
 
+
+function download(){
+  document.getElementById("downloader").download = "image.png";
+  document.getElementById("downloader").href = document.getElementById("canvas").
+    toDataURL("image/png").replace(/^data:image\/[^;]/, 'data:application/octet-stream');
+}
+
 function loadScript(url)
 {    
     var head = document.getElementsByTagName('head')[0];
@@ -446,3 +452,4 @@ loadScript('CanvasInput-master/CanvasInput.js');
 
 // todo: curvy transition which goes to the circle itself
 // todo : undo button (have to store previous states of the canvas)
+// todo : cache the unfinshed dfa's and load them whenever site visited
