@@ -26,24 +26,6 @@ class canvasController {
     }
     else {
       this.currcommandType = commandType;
-      // if (this.currcommandType == "line"){
-      //   this.currcommand = new LineCommand(this.canvasModel)
-      // }
-      
-      if (this.currcommandType == "eraser"){
-        document.getElementsByTagName("body")[0].style.cursor = 
-        "url('images/eraserIcon.png'), auto";
-        
-      }
-      else if(this.currcommandType == "line"){
-        document.getElementsByTagName("body")[0].style.cursor = 
-        "url('images/arrow-outline.png'), auto";
-
-      }
-      else{
-        document.getElementsByTagName("body")[0].style.cursor = "default";
-
-      }
     }
 
   }
@@ -473,3 +455,4 @@ loadScript('CanvasInput-master/CanvasInput.js');
 
 // todo: curvy transition which goes to the circle itself
 // todo : undo button (have to store previous states of the canvas)
+// be able to store the object in local storage
