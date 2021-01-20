@@ -451,9 +451,8 @@ function loadScript(url)
 }
 
 function update_storage(){
-
-  localStorage.setItem("canvas", localStorage.setItem("canvas", 
-    document.getElementById("canvas").toDataURL()));
+  console.log("checkpoint");
+  localStorage.setItem("canvas", document.getElementById("canvas").toDataURL());
 }
 
 function load_storage(){
@@ -463,7 +462,7 @@ function load_storage(){
     var img = new Image;
     img.src = dataURL;
     img.onload = function () {
-    ctx.drawImage(img, 0, 0);
+      document.getElementById("canvas").getContext('2d').drawImage(img, 0, 0);
   }
 }
 
@@ -474,4 +473,3 @@ loadScript('CanvasInput-master/CanvasInput.js');
 
 // todo: curvy transition which goes to the circle itself
 // todo : undo button (have to store previous states of the canvas)
-// todo : cache the unfinshed dfa's and load them whenever site visited
