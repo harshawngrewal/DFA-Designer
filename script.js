@@ -423,6 +423,7 @@ const canvasBtn = document.getElementById('canvas');
 
 canvasBtn.addEventListener('click', (e) => {
   controller.updateModel(e);
+  update_storage();
 })
 
 document.addEventListener("mousedown", (e) => {
@@ -449,6 +450,26 @@ function loadScript(url)
     head.appendChild(script);
 }
 
+function update_storage(){
+
+  localStorage.setItem("canvas", localStorage.setItem("canvas", 
+    document.getElementById("canvas").toDataURL()));
+}
+
+function load_storage(){
+  console.log("hello");
+  if(localStorage.getItem("canvas")){
+    var dataURL = localStorage.getItem("canvas");
+    var img = new Image;
+    img.src = dataURL;
+    img.onload = function () {
+    ctx.drawImage(img, 0, 0);
+  }
+}
+
+}
+
+load_storage();
 loadScript('CanvasInput-master/CanvasInput.js');
 
 // todo: curvy transition which goes to the circle itself
