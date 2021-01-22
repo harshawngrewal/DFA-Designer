@@ -169,7 +169,6 @@ function checkCircleLineIntersection(circle, line){
       retP2.y = line.starty + v1.y * u2;
       ret[ret.length] = retP2;
   }
-  console.log(ret)
   return ret.length > 0;    
  }
 
@@ -285,7 +284,9 @@ function EraserCommand () {
   EraserCommand.prototype.execute = function(shape){
     ctx.beginPath();
     if (shape.name == "CircleCommand" || shape.name == "DoubleCircleCommand"){
-      shape.input.destroy();
+      if(shape.input){
+        shape.input.destroy();
+      }
       ctx.arc(shape.xcord, shape.ycord, 45, 0, 2 * Math.PI);
       ctx.fillStyle = "white";
       ctx.fill();
@@ -293,7 +294,6 @@ function EraserCommand () {
     }
     // must be a line
     else{
-      console.log(shape);
       ctx.strokeStyle = "white";
       ctx.lineWidth = 10;
       shape.execute();
@@ -407,13 +407,11 @@ function loadScript(url)
 }
 
 function update_storage(){
-  console.log("checkpoint");
   localStorage.setItem("canvas", canvas.toDataURL());
   localStorage.setItem("observers", JSON.stringify(model.observers));
 }
 
 function load_storage(){
-  console.log("hello");
   if(localStorage.getItem("canvas")){
     var dataURL = localStorage.getItem("canvas");
     var img = new Image;
@@ -421,8 +419,35 @@ function load_storage(){
     img.onload = function () {
       canvas.getContext('2d').drawImage(img, 0, 0);
   }
-    let temp = JSON.parse(localStorage.getItem("observers") || "[]")
-    console.log(model.observers);
+    let temp_arr = JSON.parse(localStorage.getItem("observers") || "[]")
+
+    for(i = 0; i < temp_arr.length; i ++){
+      let temp_observer;
+      if (temp_arr[i].name == "LineCommand"){
+        temp_observer = new LineCommand();
+        temp_observer.startx = temp_arr[i].startx;
+        temp_observer.endx = temp_arr[i].endx;
+        temp_observer.starty = temp_arr[i].starty;
+        temp_observer.endy = temp_arr[i].endy;
+        temp_observer.m = temp_arr[i].m;
+        temp_observer.b = temp_arr[i].b;
+
+
+      }
+      else if (temp_arr[i].name == "CircleCommand"){
+        temp_observer = new CircleCommand();
+        temp_observer.xcord = temp_arr[i].xcord;
+        temp_observer.ycord = temp_arr[i].ycord;
+      }
+      else{
+        temp_observer = new DoubleCircleCommand();
+        temp_observer.xcord = temp_arr[i].xcord;
+        temp_observer.ycord = temp_arr[i].ycord;
+      }
+
+      model.observers.push(temp_observer);
+  
+    }
 }
 
 }
